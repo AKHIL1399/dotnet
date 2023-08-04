@@ -10,7 +10,7 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '2af5d1af-29d4-40e1-a8af-162bc0291ba6'
+  dockerRegistryServiceConnection: 'mypvtrepo'
   imageRepository: 'akhildotnet'
   containerRegistry: 'myregistry.azurecr.io'  # Replace 'myregistry' with your actual Azure Container Registry name
   dockerfilePath: '**/Dockerfile'
