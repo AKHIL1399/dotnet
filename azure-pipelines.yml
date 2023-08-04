@@ -18,8 +18,7 @@ variables:
   imagePullSecret: 'mypvtrepo17562003-auth'
 
   # Agent VM image name
-  pool:
-    name: Akhil-DevOps-Pipeline
+  name: Akhil-DevOps-Pipeline
 
   # Name of the new namespace being created to deploy the PR changes.
   k8sNamespaceForPR: 'review-app-$(System.PullRequest.PullRequestId)'
