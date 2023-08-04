@@ -30,7 +30,7 @@ stages:
       - job: Build
         displayName: Build
         pool:
-          name: $(pool)
+          name: Akhil-DevOps-Pipeline
         steps:
           - task: Docker@2
             displayName: Build and push an image to container registry
@@ -52,7 +52,7 @@ stages:
       - deployment: Deploy
         displayName: Deploy
         pool:
-          name: $(pool)
+          name: Akhil-DevOps-Pipeline
         environment: 'AKHIL1399dotnet-1899.mynamespace'  # Replace with your AKS namespace for staging
 
         strategy:
@@ -85,7 +85,7 @@ stages:
       - deployment: Deploy
         displayName: Deploy
         pool:
-          name: $(pool)
+          name: Akhil-DevOps-Pipeline
         environment: 'AKHIL1399dotnet-1899.mynamespace'  # Replace with your AKS namespace for production
 
         strategy:
