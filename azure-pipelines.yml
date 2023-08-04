@@ -35,12 +35,11 @@ stages:
           - task: Docker@2
             displayName: Build and push an image to container registry
             inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(imageRepository)'
               command: 'buildAndPush'
-              containerRegistry: $(dockerRegistryServiceConnection)
-              repository: $(imageRepository)
-              dockerfile: $(dockerfilePath)
-              tags: |
-                $(tag)
+              Dockerfile: '**/Dockerfile'
+              tags: '$(tag)'
 
           - upload: manifests
             artifact: manifests
@@ -63,20 +62,24 @@ stages:
                   displayName: Create imagePullSecret
                   inputs:
                     action: 'createSecret'
-                    secretName: $(imagePullSecret)
-                    dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+                    kubernetesServiceConnection: 'mycluster-mynamespace'
+                    namespace: 'mynamespace'
+                    secretType: 'dockerRegistry'
+                    secretName: '$(imagePullSecret)'
+                    dockerRegistryEndpoint: '$(dockerRegistryServiceConnection)'
 
                 - task: KubernetesManifest@0
                   displayName: Deploy to Kubernetes cluster
                   inputs:
                     action: 'deploy'
+                    kubernetesServiceConnection: 'mycluster-mynamespace'
+                    namespace: 'mynamespace'
                     manifests: |
                       $(Pipeline.Workspace)/manifests/deployment.yml
                       $(Pipeline.Workspace)/manifests/service.yml
-                    imagePullSecrets: |
-                      $(imagePullSecret)
-                    containers: |
-                      $(containerRegistry)/$(imageRepository):$(tag)
+                    containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+                    imagePullSecrets: '$(imagePullSecret)'
+                    rolloutStatusTimeout: '120'
 
   - stage: Deploy_TO_Prod
     displayName: Deploy to Production
@@ -96,17 +99,21 @@ stages:
                   displayName: Create imagePullSecret
                   inputs:
                     action: 'createSecret'
-                    secretName: $(imagePullSecret)
-                    dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+                    kubernetesServiceConnection: 'mycluster-mynamespace'
+                    namespace: 'mynamespace'
+                    secretType: 'dockerRegistry'
+                    secretName: '$(imagePullSecret)'
+                    dockerRegistryEndpoint: '$(dockerRegistryServiceConnection)'
 
                 - task: KubernetesManifest@0
                   displayName: Deploy to Kubernetes cluster
                   inputs:
                     action: 'deploy'
+                    kubernetesServiceConnection: 'mycluster-mynamespace'
+                    namespace: 'mynsamespace'
                     manifests: |
                       $(Pipeline.Workspace)/manifests/deployment.yml
                       $(Pipeline.Workspace)/manifests/service.yml
-                    imagePullSecrets: |
-                      $(imagePullSecret)
-                    containers: |
-                      $(containerRegistry)/$(imageRepository):$(tag)
+                    containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+                    imagePullSecrets: '$(imagePullSecret)'
+                    rolloutStatusTimeout: '120'
